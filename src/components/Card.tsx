@@ -3,11 +3,15 @@ import { useState } from "react"
 
 interface CardProps{
     frontTxt:string
+    backTxt?:string
 }
 
 export default function Card(props:CardProps){
     const{frontTxt}=props
-    const backTxt="Match!"
+    let {backTxt}=props
+    if(typeof backTxt==="undefined"){
+        backTxt="Match!"
+    }
     const [flipped, setFlipped] = useState(false)
     function handleFlip(){
         setFlipped(!flipped)
