@@ -1,6 +1,5 @@
 interface CardProps{
     frontTxt:string
-
 }
 
 export default function Card(props:CardProps){
