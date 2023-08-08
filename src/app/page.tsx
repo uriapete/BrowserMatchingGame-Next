@@ -14,6 +14,8 @@ export default function Home(this: any) {
 
   const [flippedCards, setFlippedCards] = useState<number[]>([])
 
+  const [matchedCards, setMatchedCards] = useState<number[]>([])
+
   function flipCardToFrontSide(cardIdx: number) {
     let flippedCardsLen=flippedCards.length
     setFlippedCards([...flippedCards, cardIdx])
