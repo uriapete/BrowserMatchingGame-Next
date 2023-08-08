@@ -14,6 +14,30 @@ export default function Home(this: any) {
 
   const [flippedCards, setFlippedCards] = useState<number[]>([])
 
+  function flipCardToFrontSide(cardIdx: number) {
+    let flippedCardsLen=flippedCards.length
+    setFlippedCards([...flippedCards, cardIdx])
+    flippedCardsLen++
+    return flippedCardsLen
+  }
+
+  function flipBack(){
+    setFlippedCards([])
+  }
+
+  // not complete, will implement match checking later
+  function checkMatch(){
+    setTimeout(flipBack, 1000);
+  }
+
+  function handleCardFlip(cardIdx:number){
+    const numFlippedCards = flipCardToFrontSide(cardIdx)
+    console.log(numFlippedCards)
+    if(numFlippedCards>=numCardsPerMatch){
+      checkMatch()
+    }
+  }
+
   for (let i = 0; i <= 3; i++) {
     for(let j=0;j<2;j++){
       let newCard:CardObj={
@@ -37,7 +61,7 @@ export default function Home(this: any) {
             }
           }
           return <Card frontTxt={frontTxt} flipped={flipped} onClick={()=>{
-            setFlippedCards([...flippedCards,idx])
+            handleCardFlip(idx)
           }} key={idx} />
         })}
       </div>
