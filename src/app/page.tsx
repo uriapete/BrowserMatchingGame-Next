@@ -8,6 +8,8 @@ interface CardObj{
 
 export default function Home(this: any) {
 
+  const numCardsPerMatch=2
+
   const cards:CardObj[]=[]
 
   const [flippedCards, setFlippedCards] = useState<number[]>([])
