@@ -2,6 +2,7 @@ interface CardProps{
     frontTxt:string
     backTxt?:string
     flipped?:boolean
+    matched?:boolean
     onClick?:()=>any
 }
 
@@ -11,14 +12,23 @@ export default function Card(props:CardProps){
     if(typeof backTxt==="undefined"){
         backTxt="Match!"
     }
+
+    const{flipped,matched}=props||false
+
+    let displayClasses: string = "bg-blue-400 text-white "
+
+    if(matched){
+        displayClasses = "bg-gray-300 text-gray-400 "
+    }else if(flipped){
+        displayClasses = "bg-white text-black "
+    }
     
-    const{flipped}=props||false
     return(
         <div
             onClick={onClick}
-            className={`comp comp-Card m-1 w-[12vw] h-[24vh] text-center flex flex-col justify-center rounded border-white border-5 ${flipped ?"bg-white text-black ":"bg-blue-400 text-white "}`}
+            className={`comp comp-Card m-1 w-[12vw] h-[24vh] text-center flex flex-col justify-center rounded border-white border-5 ${displayClasses}`}
         >
-            {flipped?frontTxt:backTxt}
+            {flipped||matched?frontTxt:backTxt}
         </div>
     )
 }
