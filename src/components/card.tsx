@@ -1,5 +1,3 @@
-import { match } from "assert"
-
 interface CardProps{
     frontTxt:string
     backTxt?:string
@@ -20,7 +18,7 @@ export default function Card(props:CardProps){
     let displayClasses: string = "bg-blue-400 text-white "
 
     if(matched){
-        displayClasses = "bg-gray-500 text-gray-100 "
+        displayClasses = "bg-gray-300 text-gray-400 "
     }else if(flipped){
         displayClasses = "bg-white text-black "
     }
