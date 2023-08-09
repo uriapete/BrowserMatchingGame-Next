@@ -10,6 +10,8 @@ export default function Home(this: any) {
 
   const numCardsPerMatch=2
 
+  const cardMatchDelay=750
+
   const cards:ICard[]=[]
 
   let checkingMatch = false
@@ -67,7 +69,7 @@ export default function Home(this: any) {
           confirmMatch()
         }
         flipBack()
-      }, 750);
+      }, cardMatchDelay);
     }
     handleMatchCheck()
   }, [flippedCards])
