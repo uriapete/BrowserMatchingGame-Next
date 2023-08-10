@@ -1,6 +1,6 @@
 "use client"
 import Card from '@/components/card'
-import { useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 
 interface ICard{
   frontTxt:string
@@ -26,6 +26,12 @@ export default function Home(this: any) {
   // switch - whether or not card flipping is allowed
   // is off during match checking
   let allowFlip = true
+
+  function handleGameStart(e:FormEvent<HTMLFormElement>){
+    e.preventDefault()
+    const form=e.target
+    const formData=new FormData(form as HTMLFormElement)
+  }
 
   // state for what cards are flipped
   const [flippedCards, setFlippedCards] = useState<number[]>([])
@@ -120,7 +126,7 @@ export default function Home(this: any) {
     <main className="flex min-h-screen flex-col items-center p-6">
       <h1 className="text-4xl">Matching Game!</h1>
       <div className="game-config shadow bg-white rounded py-[2vh] px-[1vw] my-[2vh]">
-        <form action="" className='flex flex-col'>
+        <form action="" className='flex flex-col' onSubmit={handleGameStart}>
           <div className='flex flex-row justify-between'>
             <div className='mr-[1vw]'>
               <label htmlFor="num-cards">Number of Cards</label>
