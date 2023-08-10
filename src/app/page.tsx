@@ -119,6 +119,18 @@ export default function Home(this: any) {
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
       <h1 className="text-4xl">Matching Game!</h1>
+      <div className="game-config shadow bg-white rounded py-[2vh] px-[1vw] my-[2vh]">
+        <form action="" className='flex flex-col'>
+          <div className='flex flex-row'>
+            <div className='mr-[1vw]'>
+              <label htmlFor="numCards">Number of Cards</label>
+            </div>
+            <div className='ml-[1vw] border-black border-2 rounded'>
+              <input type="number" name="numCards" id="config-num-cards" />
+            </div>
+          </div>
+        </form>
+      </div>
       <div className="gameboardcontainer mx-auto grid grid-cols-3">
         {cards.map((card, idx) => {
           // get frnttxt of card
