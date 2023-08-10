@@ -121,13 +121,24 @@ export default function Home(this: any) {
       <h1 className="text-4xl">Matching Game!</h1>
       <div className="game-config shadow bg-white rounded py-[2vh] px-[1vw] my-[2vh]">
         <form action="" className='flex flex-col'>
-          <div className='flex flex-row'>
+          <div className='flex flex-row justify-between'>
             <div className='mr-[1vw]'>
-              <label htmlFor="numCards">Number of Cards</label>
+              <label htmlFor="num-cards">Number of Cards</label>
             </div>
             <div className='ml-[1vw] border-black border-2 rounded'>
-              <input type="number" name="numCards" id="config-num-cards" />
+              <input type="number" name="num-cards" id="config-num-cards" className='w-12' defaultValue={8} />
             </div>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="mr-[1vw]">
+              <label htmlFor="num-in-match">Number of Cards per Pair</label>
+            </div>
+            <div className="border-black border-2 rounded ml-[1vw]">
+              <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} />
+            </div>
+          </div>
+          <div className='flex flex-row justify-center'>
+            <button type="submit" className='bg-sky-400 text-white rounded px-[1vw] py-[1vh]'>{"Start!"}</button>
           </div>
         </form>
       </div>
