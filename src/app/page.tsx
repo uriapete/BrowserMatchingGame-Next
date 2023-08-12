@@ -1,6 +1,6 @@
 "use client"
 import Card from '@/components/card'
-import { useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 
 interface ICard{
   frontTxt:string
@@ -9,14 +9,24 @@ interface ICard{
 export default function Home(this: any) {
 
   /////////////////////////////////////////
-  // variables - separated out for easy game config
-
-  // num of Cards per 'pair'
-  const numCardsPerMatch=2
+  // set variables
 
   // if num of cards flipped == numCardsPerMatch,
   // amt of ms before card matches
   const cardMatchDelay=750
+
+  ////////////////////////////////////////
+
+  ////////////////////////////////////////
+  // config state vars - for user config
+
+  // num of Cards per 'pair'
+  // let numCardsPerMatch=2
+  const [numCardsPerMatch, setNumCardsPerMatch] = useState(2)
+
+  // num of total cards
+  // let numCards=8
+  const [numCards, setNumCards] = useState(8)
 
   ////////////////////////////////////////
 
@@ -26,6 +36,17 @@ export default function Home(this: any) {
   // switch - whether or not card flipping is allowed
   // is off during match checking
   let allowFlip = true
+
+  const [configMsg, setConfigMsg] = useState<string[]>([])
+  function addConfigMsg(...msg:string[]){
+    setConfigMsg([...configMsg,...msg])
+  }
+
+  function handleGameStart(e:FormEvent<HTMLFormElement>){
+    e.preventDefault()
+    const form=e.target
+    const formData=new FormData(form as HTMLFormElement)
+  }
 
   // state for what cards are flipped
   const [flippedCards, setFlippedCards] = useState<number[]>([])
@@ -120,14 +141,28 @@ export default function Home(this: any) {
     <main className="flex min-h-screen flex-col items-center p-6">
       <h1 className="text-4xl">Matching Game!</h1>
       <div className="game-config shadow bg-white rounded py-[2vh] px-[1vw] my-[2vh]">
-        <form action="" className='flex flex-col'>
-          <div className='flex flex-row'>
+        <form action="" className='flex flex-col' onSubmit={handleGameStart}>
+          <div className='flex flex-row justify-between'>
             <div className='mr-[1vw]'>
-              <label htmlFor="numCards">Number of Cards</label>
+              <label htmlFor="num-cards">Number of Cards</label>
             </div>
             <div className='ml-[1vw] border-black border-2 rounded'>
-              <input type="number" name="numCards" id="config-num-cards" />
+              <input type="number" name="num-cards" id="config-num-cards" className='w-12' defaultValue={8} required />
             </div>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="mr-[1vw]">
+              <label htmlFor="num-match">Number of Cards per Pair</label>
+            </div>
+            <div className="border-black border-2 rounded ml-[1vw]">
+              <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} required />
+            </div>
+          </div>
+          <div className="">
+            <p className="">{configMsg}</p>
+          </div>
+          <div className='flex flex-row justify-center'>
+            <button type="submit" className='bg-sky-400 text-white rounded px-[1vw] py-[1vh]'>{"Start!"}</button>
           </div>
         </form>
       </div>
