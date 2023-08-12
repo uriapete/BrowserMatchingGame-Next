@@ -137,7 +137,7 @@ export default function Home(this: any) {
           </div>
           <div className="flex flex-row justify-between">
             <div className="mr-[1vw]">
-              <label htmlFor="num-in-match">Number of Cards per Pair</label>
+              <label htmlFor="num-match">Number of Cards per Pair</label>
             </div>
             <div className="border-black border-2 rounded ml-[1vw]">
               <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} />
