@@ -37,6 +37,11 @@ export default function Home(this: any) {
   // is off during match checking
   let allowFlip = true
 
+  const [configMsg, setConfigMsg] = useState<string[]>([])
+  function addConfigMsg(...msg:string[]){
+    setConfigMsg([...configMsg,...msg])
+  }
+
   function handleGameStart(e:FormEvent<HTMLFormElement>){
     e.preventDefault()
     const form=e.target
@@ -152,6 +157,9 @@ export default function Home(this: any) {
             <div className="border-black border-2 rounded ml-[1vw]">
               <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} required />
             </div>
+          </div>
+          <div className="">
+            <p className="">{configMsg}</p>
           </div>
           <div className='flex flex-row justify-center'>
             <button type="submit" className='bg-sky-400 text-white rounded px-[1vw] py-[1vh]'>{"Start!"}</button>
