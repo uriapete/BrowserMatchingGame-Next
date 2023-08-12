@@ -9,14 +9,24 @@ interface ICard{
 export default function Home(this: any) {
 
   /////////////////////////////////////////
-  // variables - separated out for easy game config
-
-  // num of Cards per 'pair'
-  const numCardsPerMatch=2
+  // set variables
 
   // if num of cards flipped == numCardsPerMatch,
   // amt of ms before card matches
   const cardMatchDelay=750
+
+  ////////////////////////////////////////
+
+  ////////////////////////////////////////
+  // config state vars - for user config
+
+  // num of Cards per 'pair'
+  // let numCardsPerMatch=2
+  const [numCardsPerMatch, setNumCardsPerMatch] = useState(2)
+
+  // num of total cards
+  // let numCards=8
+  const [numCards, setNumCards] = useState(8)
 
   ////////////////////////////////////////
 
