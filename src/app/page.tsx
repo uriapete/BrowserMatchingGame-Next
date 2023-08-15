@@ -37,15 +37,48 @@ export default function Home(this: any) {
   // is off during match checking
   let allowFlip = true
 
-  const [configMsg, setConfigMsg] = useState<string[]>([])
-  function addConfigMsg(...msg:string[]){
-    setConfigMsg([...configMsg,...msg])
+  const [configMsgs, setConfigMsgs] = useState<string[]>([])
+  function addConfigMsg(...msgs:string[]){
+    setConfigMsgs([...configMsgs,...msgs])
   }
 
   function handleGameStart(e:FormEvent<HTMLFormElement>){
     e.preventDefault()
+
+    console.log("setup start game")
     const form=e.target
     const formData=new FormData(form as HTMLFormElement)
+
+    const numCardsStr=formData.get("num-cards")?.toString()
+    const numMatchStr=formData.get("num-match")?.toString()
+
+    let numCardsSetting:number
+    let numMatchSetting:number
+    
+    if(typeof numCardsStr==="undefined"){
+      addConfigMsg("Number of cards can't be empty!")
+      return null
+    }
+    if(isNaN(parseInt(numCardsStr))){
+      addConfigMsg("Invalid number of cards!")
+      return null
+    }
+
+    if(typeof numMatchStr==="undefined"){
+      addConfigMsg("Number of cards per matching set can't be empty!")
+      return null
+    }if(isNaN(parseInt(numMatchStr))){
+      addConfigMsg("Invalid number of cards per matching set!")
+      return null
+    }
+
+    numCardsSetting = parseInt(numCardsStr)
+    numMatchSetting = parseInt(numMatchStr)
+
+    if(numCardsSetting%numMatchSetting!==0){
+      addConfigMsg("Number of total cards must be evenly divisible by number per pair!")
+      return null
+    }
   }
 
   // state for what cards are flipped
@@ -159,7 +192,13 @@ export default function Home(this: any) {
             </div>
           </div>
           <div className="">
-            <p className="">{configMsg}</p>
+            {
+              configMsgs.map((msg,idx)=>{
+                return(
+                  <p key={idx}>{msg}</p>
+                )
+              })
+            }
           </div>
           <div className='flex flex-row justify-center'>
             <button type="submit" className='bg-sky-400 text-white rounded px-[1vw] py-[1vh]'>{"Start!"}</button>
