@@ -173,13 +173,13 @@ export default function Home(this: any) {
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
       <h1 className="text-4xl">Matching Game!</h1>
-      <div className="game-config shadow bg-white rounded py-[2vh] px-[1vw] my-[2vh]">
+      <div className="game-config shadow bg-white dark:bg-blue-950 rounded py-[2vh] px-[1vw] my-[2vh]">
         <form action="" className='flex flex-col' onSubmit={handleGameStart}>
           <div className='flex flex-row justify-between'>
             <div className='mr-[1vw]'>
               <label htmlFor="num-cards">Number of Cards</label>
             </div>
-            <div className='ml-[1vw] border-black border-2 rounded'>
+            <div className='ml-[1vw] border-black border-2 rounded dark:text-black'>
               <input type="number" name="num-cards" id="config-num-cards" className='w-12' defaultValue={8} required />
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function Home(this: any) {
             <div className="mr-[1vw]">
               <label htmlFor="num-match">Number of Cards per Pair</label>
             </div>
-            <div className="border-black border-2 rounded ml-[1vw]">
+            <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
               <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} required />
             </div>
           </div>
