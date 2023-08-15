@@ -30,22 +30,91 @@ export default function Home(this: any) {
 
   ////////////////////////////////////////
 
-  // array for cards
-  const cards:ICard[]=[]
+  ////////////////////////////////////////
+  // switches
 
-  // switch - whether or not card flipping is allowed
+  // whether or not card flipping is allowed
   // is off during match checking
   let allowFlip = true
 
-  const [configMsg, setConfigMsg] = useState<string[]>([])
-  function addConfigMsg(...msg:string[]){
-    setConfigMsg([...configMsg,...msg])
+  ////////////////////////////////////////
+
+  // array for cards
+  // const cards:ICard[]=[]
+  const [cards, setCards] = useState<ICard[]>([])
+
+  function createDeck(totalCards:number,numPerPair:number){
+    const newDeck:ICard[]=[]
+    
+    const numPairs=totalCards/numPerPair
+
+    for (let i = 0; i < numPairs; i++) {
+      for (let j = 0; j < numPerPair; j++) {
+        let newCard: ICard = {
+          frontTxt: i.toString()
+        }
+        newDeck.push(newCard)
+      }
+    }
+    const shuffledDeck:ICard[]=[]
+    while(newDeck.length>0){
+      shuffledDeck.push(...newDeck.splice(Math.random()*newDeck.length))
+    }
+
+    setFlippedCards([])
+    setMatchedCards([])
+
+    setCards(shuffledDeck)
+  }
+
+  const [configMsgs, setConfigMsgs] = useState<string[]>([])
+  function addConfigMsg(...msgs:string[]){
+    setConfigMsgs([...configMsgs,...msgs])
   }
 
   function handleGameStart(e:FormEvent<HTMLFormElement>){
     e.preventDefault()
+
+    console.log("setup start game")
     const form=e.target
     const formData=new FormData(form as HTMLFormElement)
+
+    const numCardsStr=formData.get("num-cards")?.toString()
+    const numMatchStr=formData.get("num-match")?.toString()
+
+    let numCardsSetting:number
+    let numMatchSetting:number
+    
+    if(typeof numCardsStr==="undefined"){
+      addConfigMsg("Number of cards can't be empty!")
+      return null
+    }
+
+    numCardsSetting=parseInt(numCardsStr)
+
+    if(isNaN(numCardsSetting)){
+      addConfigMsg("Invalid number of cards!")
+      return null
+    }
+
+    if(typeof numMatchStr==="undefined"){
+      addConfigMsg("Number of cards per matching set can't be empty!")
+      return null
+    }
+    
+    numMatchSetting=parseInt(numMatchStr)
+
+    if(isNaN(numMatchSetting)){
+      addConfigMsg("Invalid number of cards per matching set!")
+      return null
+    }
+
+    if(numCardsSetting%numMatchSetting!==0){
+      addConfigMsg("Number of total cards must be evenly divisible by number per pair!")
+      return null
+    }
+
+    createDeck(numCardsSetting,numMatchSetting)
   }
 
   // state for what cards are flipped
@@ -53,6 +122,8 @@ export default function Home(this: any) {
 
   // state for what cards are matched
   const [matchedCards, setMatchedCards] = useState<number[]>([])
+
+
 
   // flip a card
   function flipCardToFrontSide(cardIdx: number) {
@@ -94,17 +165,6 @@ export default function Home(this: any) {
     flipCardToFrontSide(cardIdx)
   }
 
-  // init cards arr
-  // WILL BE REMOVED LATER, IS JUST FOR TESTING RIGHT NOW
-  for (let i = 0; i <= 3; i++) {
-    for(let j=0;j<2;j++){
-      let newCard:ICard={
-        frontTxt:i.toString()
-      }
-      cards.push(newCard)
-    }
-  }
-
   // effect to run upon update of flippedCards
   // this checks the flipped cards for a match
   useEffect(() => {
@@ -140,26 +200,32 @@ export default function Home(this: any) {
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
       <h1 className="text-4xl">Matching Game!</h1>
-      <div className="game-config shadow bg-white rounded py-[2vh] px-[1vw] my-[2vh]">
+      <div className="game-config shadow bg-white dark:bg-blue-950 rounded py-[2vh] px-[1vw] my-[2vh]">
         <form action="" className='flex flex-col' onSubmit={handleGameStart}>
           <div className='flex flex-row justify-between'>
             <div className='mr-[1vw]'>
               <label htmlFor="num-cards">Number of Cards</label>
             </div>
-            <div className='ml-[1vw] border-black border-2 rounded'>
-              <input type="number" name="num-cards" id="config-num-cards" className='w-12' defaultValue={8} required />
+            <div className='ml-[1vw] border-black border-2 rounded dark:text-black'>
+              <input type="number" name="num-cards" id="config-num-cards" className='w-12' defaultValue={6} required />
             </div>
           </div>
           <div className="flex flex-row justify-between">
             <div className="mr-[1vw]">
               <label htmlFor="num-match">Number of Cards per Pair</label>
             </div>
-            <div className="border-black border-2 rounded ml-[1vw]">
+            <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
               <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} required />
             </div>
           </div>
           <div className="">
-            <p className="">{configMsg}</p>
+            {
+              configMsgs.map((msg,idx)=>{
+                return(
+                  <p key={idx}>{msg}</p>
+                )
+              })
+            }
           </div>
           <div className='flex flex-row justify-center'>
             <button type="submit" className='bg-sky-400 text-white rounded px-[1vw] py-[1vh]'>{"Start!"}</button>
