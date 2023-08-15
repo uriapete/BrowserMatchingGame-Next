@@ -30,12 +30,42 @@ export default function Home(this: any) {
 
   ////////////////////////////////////////
 
-  // array for cards
-  const cards:ICard[]=[]
+  ////////////////////////////////////////
+  // switches
 
-  // switch - whether or not card flipping is allowed
+  // whether or not card flipping is allowed
   // is off during match checking
   let allowFlip = true
+
+  ////////////////////////////////////////
+
+  // array for cards
+  // const cards:ICard[]=[]
+  const [cards, setCards] = useState<ICard[]>([])
+
+  function createDeck(totalCards:number,numPerPair:number){
+    const newDeck:ICard[]=[]
+    
+    const numPairs=totalCards/numPerPair
+
+    for (let i = 0; i < numPairs; i++) {
+      for (let j = 0; j < numPerPair; j++) {
+        let newCard: ICard = {
+          frontTxt: i.toString()
+        }
+        newDeck.push(newCard)
+      }
+    }
+    const shuffledDeck:ICard[]=[]
+    while(newDeck.length>0){
+      shuffledDeck.push(...newDeck.splice(Math.random()*newDeck.length))
+    }
+
+    setFlippedCards([])
+    setMatchedCards([])
+
+    setCards(shuffledDeck)
+  }
 
   const [configMsgs, setConfigMsgs] = useState<string[]>([])
   function addConfigMsg(...msgs:string[]){
@@ -59,7 +89,10 @@ export default function Home(this: any) {
       addConfigMsg("Number of cards can't be empty!")
       return null
     }
-    if(isNaN(parseInt(numCardsStr))){
+
+    numCardsSetting=parseInt(numCardsStr)
+
+    if(isNaN(numCardsSetting)){
       addConfigMsg("Invalid number of cards!")
       return null
     }
@@ -67,18 +100,21 @@ export default function Home(this: any) {
     if(typeof numMatchStr==="undefined"){
       addConfigMsg("Number of cards per matching set can't be empty!")
       return null
-    }if(isNaN(parseInt(numMatchStr))){
+    }
+    
+    numMatchSetting=parseInt(numMatchStr)
+
+    if(isNaN(numMatchSetting)){
       addConfigMsg("Invalid number of cards per matching set!")
       return null
     }
-
-    numCardsSetting = parseInt(numCardsStr)
-    numMatchSetting = parseInt(numMatchStr)
 
     if(numCardsSetting%numMatchSetting!==0){
       addConfigMsg("Number of total cards must be evenly divisible by number per pair!")
       return null
     }
+
+    createDeck(numCardsSetting,numMatchSetting)
   }
 
   // state for what cards are flipped
@@ -86,6 +122,8 @@ export default function Home(this: any) {
 
   // state for what cards are matched
   const [matchedCards, setMatchedCards] = useState<number[]>([])
+
+
 
   // flip a card
   function flipCardToFrontSide(cardIdx: number) {
@@ -125,17 +163,6 @@ export default function Home(this: any) {
   // we'll remove it if the game is done and handleCardFlip didn't change
   function handleCardFlip(cardIdx:number){
     flipCardToFrontSide(cardIdx)
-  }
-
-  // init cards arr
-  // WILL BE REMOVED LATER, IS JUST FOR TESTING RIGHT NOW
-  for (let i = 0; i <= 3; i++) {
-    for(let j=0;j<2;j++){
-      let newCard:ICard={
-        frontTxt:i.toString()
-      }
-      cards.push(newCard)
-    }
   }
 
   // effect to run upon update of flippedCards
@@ -180,7 +207,7 @@ export default function Home(this: any) {
               <label htmlFor="num-cards">Number of Cards</label>
             </div>
             <div className='ml-[1vw] border-black border-2 rounded dark:text-black'>
-              <input type="number" name="num-cards" id="config-num-cards" className='w-12' defaultValue={8} required />
+              <input type="number" name="num-cards" id="config-num-cards" className='w-12' defaultValue={6} required />
             </div>
           </div>
           <div className="flex flex-row justify-between">
