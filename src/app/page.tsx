@@ -24,9 +24,8 @@ export default function Home(this: any) {
   // let numCardsPerMatch=2
   const [numCardsPerMatch, setNumCardsPerMatch] = useState(2)
 
-  // num of total cards
-  // let numCards=8
-  const [numCards, setNumCards] = useState(8)
+  // state to handle how much per row
+  const [cardsPerRow, setCardsPerRow] = useState(3)
 
   ////////////////////////////////////////
 
@@ -43,76 +42,122 @@ export default function Home(this: any) {
   // const cards:ICard[]=[]
   const [cards, setCards] = useState<ICard[]>([])
 
+  // fn for initting the deck
   function createDeck(totalCards:number,numPerPair:number){
+    // base, unshuffled deck
     const newDeck:ICard[]=[]
     
+    // number of total pairs
     const numPairs=totalCards/numPerPair
 
+    // for every pair...
     for (let i = 0; i < numPairs; i++) {
+      // for each card in current pair...
       for (let j = 0; j < numPerPair; j++) {
+        // make a card and push it to the base deck
         let newCard: ICard = {
           frontTxt: i.toString()
         }
         newDeck.push(newCard)
       }
     }
+
+    // init shufffled deck
     const shuffledDeck:ICard[]=[]
+
+    // until the unshuffled deck is empty,
+    // randomly take cards from the unshuffled deck
+    // and put them into the shuffled deck
     while(newDeck.length>0){
       shuffledDeck.push(...newDeck.splice(Math.random()*newDeck.length))
     }
 
+    // set this state, it will be used
+    setNumCardsPerMatch(numPerPair)
+
+    // calculate how many cards to have per row
+    // start with square grid
+    // if not divisible cleanly, move to try wider grid
+    // continue until we have clean, divisible grid of cards
+    for(let i = Math.floor(Math.sqrt(totalCards)); i>0; i--){
+      if(totalCards%i===0){
+        setCardsPerRow(totalCards/i)
+        break;
+      }
+    }
+
+    // reset flipped and matched cards
     setFlippedCards([])
     setMatchedCards([])
 
+    // now, set our deck
     setCards(shuffledDeck)
   }
 
-  const [configMsgs, setConfigMsgs] = useState<string[]>([])
-  function addConfigMsg(...msgs:string[]){
-    setConfigMsgs([...configMsgs,...msgs])
-  }
+  // our state to use for error msgs in config
+  // ex "you need more than 0 cards!"
+  const [configMsg, setConfigMsg] = useState("")
 
+  // fn to init game start
   function handleGameStart(e:FormEvent<HTMLFormElement>){
+    // e will be a form, let's prevent refresh
     e.preventDefault()
 
-    console.log("setup start game")
+    // get config data
     const form=e.target
     const formData=new FormData(form as HTMLFormElement)
 
+    // put config data into vars
     const numCardsStr=formData.get("num-cards")?.toString()
     const numMatchStr=formData.get("num-match")?.toString()
 
+    // our number vars
     let numCardsSetting:number
     let numMatchSetting:number
+
+    // check if num per pair or total cards are:
+    // empty
+    // not a number
+    // less than 0
+
+    // or if num per pair < 2
+    // or if you have less than 2 pairs
+
+    if(typeof numMatchStr==="undefined"){
+      setConfigMsg("Number of cards per matching set can't be empty!")
+      return null
+    }
+    
+    numMatchSetting=parseInt(numMatchStr)
+
+    if(isNaN(numMatchSetting)||numMatchSetting<2){
+      setConfigMsg("Invalid number of cards per matching set! It must be more than 1.")
+      return null
+    }
     
     if(typeof numCardsStr==="undefined"){
-      addConfigMsg("Number of cards can't be empty!")
+      setConfigMsg("Number of cards can't be empty!")
       return null
     }
 
     numCardsSetting=parseInt(numCardsStr)
 
     if(isNaN(numCardsSetting)){
-      addConfigMsg("Invalid number of cards!")
+      setConfigMsg("Invalid number of cards!")
       return null
     }
 
-    if(typeof numMatchStr==="undefined"){
-      addConfigMsg("Number of cards per matching set can't be empty!")
-      return null
-    }
-    
-    numMatchSetting=parseInt(numMatchStr)
-
-    if(isNaN(numMatchSetting)){
-      addConfigMsg("Invalid number of cards per matching set!")
+    if(numCardsSetting<2*numMatchSetting){
+      setConfigMsg("You need to have at least 2 \"pairs\" of cards!")
       return null
     }
 
     if(numCardsSetting%numMatchSetting!==0){
-      addConfigMsg("Number of total cards must be evenly divisible by number per pair!")
+      setConfigMsg("Number of total cards must be evenly divisible by number per pair!")
       return null
     }
+
+    setConfigMsg("")
 
     createDeck(numCardsSetting,numMatchSetting)
   }
@@ -122,8 +167,6 @@ export default function Home(this: any) {
 
   // state for what cards are matched
   const [matchedCards, setMatchedCards] = useState<number[]>([])
-
-
 
   // flip a card
   function flipCardToFrontSide(cardIdx: number) {
@@ -150,7 +193,7 @@ export default function Home(this: any) {
     }
     return true
   }
-
+  
   // fn for confirming a match
   // should run AFTER checkMatch returns true
   // adds all flipped cards to matchedCards
@@ -219,20 +262,14 @@ export default function Home(this: any) {
             </div>
           </div>
           <div className="">
-            {
-              configMsgs.map((msg,idx)=>{
-                return(
-                  <p key={idx}>{msg}</p>
-                )
-              })
-            }
+            <h6 className='text-red-500 text-xl'><b>{configMsg}</b></h6>
           </div>
           <div className='flex flex-row justify-center'>
             <button type="submit" className='bg-sky-400 text-white rounded px-[1vw] py-[1vh]'>{"Start!"}</button>
           </div>
         </form>
       </div>
-      <div className="gameboardcontainer mx-auto grid grid-cols-3">
+      <div className={`gameboardcontainer mx-auto grid grid-cols-${cardsPerRow}`}>
         {cards.map((card, idx) => {
           // get frnttxt of card
           const{frontTxt}=card
