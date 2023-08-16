@@ -78,6 +78,18 @@ export default function Home(this: any) {
 
     let numCardsSetting:number
     let numMatchSetting:number
+
+    if(typeof numMatchStr==="undefined"){
+      setConfigMsg("Number of cards per matching set can't be empty!")
+      return null
+    }
+    
+    numMatchSetting=parseInt(numMatchStr)
+
+    if(isNaN(numMatchSetting)||numMatchSetting<2){
+      setConfigMsg("Invalid number of cards per matching set! It must be more than 1.")
+      return null
+    }
     
     if(typeof numCardsStr==="undefined"){
       setConfigMsg("Number of cards can't be empty!")
@@ -91,15 +103,8 @@ export default function Home(this: any) {
       return null
     }
 
-    if(typeof numMatchStr==="undefined"){
-      setConfigMsg("Number of cards per matching set can't be empty!")
-      return null
-    }
-    
-    numMatchSetting=parseInt(numMatchStr)
-
-    if(isNaN(numMatchSetting)){
-      setConfigMsg("Number of cards per matching set can't be empty!")
+    if(numCardsSetting<2*numMatchSetting){
+      setConfigMsg("You need to have at least 2 \"pairs\" of cards!")
       return null
     }
 
@@ -107,6 +112,8 @@ export default function Home(this: any) {
       setConfigMsg("Number of total cards must be evenly divisible by number per pair!")
       return null
     }
+
+    setConfigMsg("")
 
     createDeck(numCardsSetting,numMatchSetting)
   }
