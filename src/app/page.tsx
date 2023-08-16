@@ -67,15 +67,11 @@ export default function Home(this: any) {
     setCards(shuffledDeck)
   }
 
-  const [configMsgs, setConfigMsgs] = useState<string[]>([])
-  function addConfigMsg(...msgs:string[]){
-    setConfigMsgs([...configMsgs,...msgs])
-  }
+  const [configMsg, setConfigMsg] = useState("")
 
   function handleGameStart(e:FormEvent<HTMLFormElement>){
     e.preventDefault()
 
-    console.log("setup start game")
     const form=e.target
     const formData=new FormData(form as HTMLFormElement)
 
@@ -86,31 +82,31 @@ export default function Home(this: any) {
     let numMatchSetting:number
     
     if(typeof numCardsStr==="undefined"){
-      addConfigMsg("Number of cards can't be empty!")
+      setConfigMsg("Number of cards can't be empty!")
       return null
     }
 
     numCardsSetting=parseInt(numCardsStr)
 
     if(isNaN(numCardsSetting)){
-      addConfigMsg("Invalid number of cards!")
+      setConfigMsg("Invalid number of cards!")
       return null
     }
 
     if(typeof numMatchStr==="undefined"){
-      addConfigMsg("Number of cards per matching set can't be empty!")
+      setConfigMsg("Number of cards per matching set can't be empty!")
       return null
     }
     
     numMatchSetting=parseInt(numMatchStr)
 
     if(isNaN(numMatchSetting)){
-      addConfigMsg("Invalid number of cards per matching set!")
+      setConfigMsg("Number of cards per matching set can't be empty!")
       return null
     }
 
     if(numCardsSetting%numMatchSetting!==0){
-      addConfigMsg("Number of total cards must be evenly divisible by number per pair!")
+      setConfigMsg("Number of total cards must be evenly divisible by number per pair!")
       return null
     }
 
@@ -219,13 +215,7 @@ export default function Home(this: any) {
             </div>
           </div>
           <div className="">
-            {
-              configMsgs.map((msg,idx)=>{
-                return(
-                  <p key={idx}>{msg}</p>
-                )
-              })
-            }
+            <h6 className='text-red-500 text-xl'><b>{configMsg}</b></h6>
           </div>
           <div className='flex flex-row justify-center'>
             <button type="submit" className='bg-sky-400 text-white rounded px-[1vw] py-[1vh]'>{"Start!"}</button>
