@@ -24,6 +24,9 @@ export default function Home(this: any) {
   // let numCardsPerMatch=2
   const [numCardsPerMatch, setNumCardsPerMatch] = useState(2)
 
+  // state to handle how much per row
+  const [cardsPerRow, setCardsPerRow] = useState(3)
+
   ////////////////////////////////////////
 
   ////////////////////////////////////////
@@ -58,6 +61,13 @@ export default function Home(this: any) {
     }
 
     setNumCardsPerMatch(numPerPair)
+
+    for(let i = Math.floor(Math.sqrt(totalCards)); i>0; i--){
+      if(totalCards%i===0){
+        setCardsPerRow(totalCards/i)
+        break;
+      }
+    }
 
     setFlippedCards([])
     setMatchedCards([])
@@ -151,7 +161,7 @@ export default function Home(this: any) {
     }
     return true
   }
-
+  
   // fn for confirming a match
   // should run AFTER checkMatch returns true
   // adds all flipped cards to matchedCards
@@ -227,7 +237,7 @@ export default function Home(this: any) {
           </div>
         </form>
       </div>
-      <div className="gameboardcontainer mx-auto grid grid-cols-3">
+      <div className={`gameboardcontainer mx-auto grid grid-cols-${cardsPerRow}`}>
         {cards.map((card, idx) => {
           // get frnttxt of card
           const{frontTxt}=card
