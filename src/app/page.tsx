@@ -42,26 +42,43 @@ export default function Home(this: any) {
   // const cards:ICard[]=[]
   const [cards, setCards] = useState<ICard[]>([])
 
+  // fn for initting the deck
   function createDeck(totalCards:number,numPerPair:number){
+    // base, unshuffled deck
     const newDeck:ICard[]=[]
     
+    // number of total pairs
     const numPairs=totalCards/numPerPair
 
+    // for every pair...
     for (let i = 0; i < numPairs; i++) {
+      // for each card in current pair...
       for (let j = 0; j < numPerPair; j++) {
+        // make a card and push it to the base deck
         let newCard: ICard = {
           frontTxt: i.toString()
         }
         newDeck.push(newCard)
       }
     }
+
+    // init shufffled deck
     const shuffledDeck:ICard[]=[]
+
+    // until the unshuffled deck is empty,
+    // randomly take cards from the unshuffled deck
+    // and put them into the shuffled deck
     while(newDeck.length>0){
       shuffledDeck.push(...newDeck.splice(Math.random()*newDeck.length))
     }
 
+    // set this state, it will be used
     setNumCardsPerMatch(numPerPair)
 
+    // calculate how many cards to have per row
+    // start with square grid
+    // if not divisible cleanly, move to try wider grid
+    // continue until we have clean, divisible grid of cards
     for(let i = Math.floor(Math.sqrt(totalCards)); i>0; i--){
       if(totalCards%i===0){
         setCardsPerRow(totalCards/i)
@@ -69,25 +86,42 @@ export default function Home(this: any) {
       }
     }
 
+    // reset flipped and matched cards
     setFlippedCards([])
     setMatchedCards([])
 
+    // now, set our deck
     setCards(shuffledDeck)
   }
 
+  // our state to use for error msgs in config
+  // ex "you need more than 0 cards!"
   const [configMsg, setConfigMsg] = useState("")
 
+  // fn to init game start
   function handleGameStart(e:FormEvent<HTMLFormElement>){
+    // e will be a form, let's prevent refresh
     e.preventDefault()
 
+    // get config data
     const form=e.target
     const formData=new FormData(form as HTMLFormElement)
 
+    // put config data into vars
     const numCardsStr=formData.get("num-cards")?.toString()
     const numMatchStr=formData.get("num-match")?.toString()
 
+    // our number vars
     let numCardsSetting:number
     let numMatchSetting:number
+
+    // check if num per pair or total cards are:
+    // empty
+    // not a number
+    // less than 0
+
+    // or if num per pair < 2
+    // or if you have less than 2 pairs
 
     if(typeof numMatchStr==="undefined"){
       setConfigMsg("Number of cards per matching set can't be empty!")
@@ -133,8 +167,6 @@ export default function Home(this: any) {
 
   // state for what cards are matched
   const [matchedCards, setMatchedCards] = useState<number[]>([])
-
-
 
   // flip a card
   function flipCardToFrontSide(cardIdx: number) {
