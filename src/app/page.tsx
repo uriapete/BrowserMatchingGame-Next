@@ -61,6 +61,8 @@ export default function Home(this: any) {
       shuffledDeck.push(...newDeck.splice(Math.random()*newDeck.length))
     }
 
+    setNumCardsPerMatch(numPerPair)
+
     setFlippedCards([])
     setMatchedCards([])
 
