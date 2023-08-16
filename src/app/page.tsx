@@ -24,10 +24,6 @@ export default function Home(this: any) {
   // let numCardsPerMatch=2
   const [numCardsPerMatch, setNumCardsPerMatch] = useState(2)
 
-  // num of total cards
-  // let numCards=8
-  const [numCards, setNumCards] = useState(8)
-
   ////////////////////////////////////////
 
   ////////////////////////////////////////
