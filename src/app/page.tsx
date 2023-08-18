@@ -27,6 +27,9 @@ export default function Home(this: any) {
   // state to handle how much per row
   const [cardsPerRow, setCardsPerRow] = useState(3)
 
+  // state whether cards should flip over at the start
+  const [flipAtStart, setFlipAtStart] = useState(true)
+
   ////////////////////////////////////////
 
   ////////////////////////////////////////
@@ -260,6 +263,12 @@ export default function Home(this: any) {
             <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
               <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} required />
             </div>
+          </div>
+          <div className="">
+            <button className={`rounded-full px-[1vw] py-[.5vh] ${flipAtStart?"bg-sky-400 dark:bg-blue-800":"bg-gray-600"}`} onClick={(e)=>{
+              e.preventDefault()
+              setFlipAtStart(!flipAtStart)
+            }}>Flip cards over at start: {flipAtStart?"On":"Off"}</button>
           </div>
           <div className="">
             <h6 className='text-red-500 text-xl'><b>{configMsg}</b></h6>
