@@ -27,6 +27,9 @@ export default function Home(this: any) {
   // state to handle how much per row
   const [cardsPerRow, setCardsPerRow] = useState(3)
 
+  // state whether cards should flip over at the start
+  const [flipAtStart, setFlipAtStart] = useState(true)
+
   ////////////////////////////////////////
 
   ////////////////////////////////////////
@@ -35,6 +38,11 @@ export default function Home(this: any) {
   // whether or not card flipping is allowed
   // is off during match checking
   let allowFlip = true
+
+  // disallows checking during first flip at start (if flipAtStart is on)
+  let initFlip=false
+
+  const [flipStarts, setFlipStarts] = useState(0)
 
   ////////////////////////////////////////
 
@@ -160,7 +168,36 @@ export default function Home(this: any) {
     setConfigMsg("")
 
     createDeck(numCardsSetting,numMatchSetting)
+    if(flipAtStart){
+      // flipStart()
+      setFlipStarts(flipStarts+1);
+    }
   }
+
+  function flipStart(){
+    initFlip = true;
+    let cardIDList: number[] = []
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+      cardIDList.push(i)
+    }
+    setFlippedCards(cardIDList)
+    console.log(cardIDList)
+    let viewFlipStartTimeout = setTimeout(() => {
+      flipBack()
+      initFlip=false
+    },1500);
+    console.log(viewFlipStartTimeout)
+  }
+
+  useEffect(() => {
+    flipStart()
+  
+    // return () => {
+    //   second
+    // }
+  }, [flipStarts])
+  
 
   // state for what cards are flipped
   const [flippedCards, setFlippedCards] = useState<number[]>([])
@@ -212,6 +249,11 @@ export default function Home(this: any) {
   // this checks the flipped cards for a match
   useEffect(() => {
     function handleMatchCheck() {
+      // don't check matches during first flipAtStart
+      if(initFlip){
+        return null
+      }
+
       // only check for match once we have enough cards for a "pair"
       // "pair" as defined in numCardsPerMatch
       // else,
@@ -260,6 +302,12 @@ export default function Home(this: any) {
             <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
               <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} required />
             </div>
+          </div>
+          <div className="">
+            <button className={`rounded-full px-[1vw] py-[.5vh] ${flipAtStart?"bg-sky-400 dark:bg-blue-800":"bg-gray-600"}`} onClick={(e)=>{
+              e.preventDefault()
+              setFlipAtStart(!flipAtStart)
+            }}>Flip cards over at start: {flipAtStart?"On":"Off"}</button>
           </div>
           <div className="">
             <h6 className='text-red-500 text-xl'><b>{configMsg}</b></h6>
