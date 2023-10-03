@@ -42,6 +42,8 @@ export default function Home(this: any) {
   // disallows checking during first flip at start (if flipAtStart is on)
   let initFlip=false
 
+  const [flipStarts, setFlipStarts] = useState(0)
+
   ////////////////////////////////////////
 
   // array for cards
@@ -166,7 +168,36 @@ export default function Home(this: any) {
     setConfigMsg("")
 
     createDeck(numCardsSetting,numMatchSetting)
+    if(flipAtStart){
+      // flipStart()
+      setFlipStarts(flipStarts+1);
+    }
   }
+
+  function flipStart(){
+    initFlip = true;
+    let cardIDList: number[] = []
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+      cardIDList.push(i)
+    }
+    setFlippedCards(cardIDList)
+    console.log(cardIDList)
+    let viewFlipStartTimeout = setTimeout(() => {
+      flipBack()
+      initFlip=false
+    },1500);
+    console.log(viewFlipStartTimeout)
+  }
+
+  useEffect(() => {
+    flipStart()
+  
+    // return () => {
+    //   second
+    // }
+  }, [flipStarts])
+  
 
   // state for what cards are flipped
   const [flippedCards, setFlippedCards] = useState<number[]>([])
@@ -218,6 +249,11 @@ export default function Home(this: any) {
   // this checks the flipped cards for a match
   useEffect(() => {
     function handleMatchCheck() {
+      // don't check matches during first flipAtStart
+      if(initFlip){
+        return null
+      }
+
       // only check for match once we have enough cards for a "pair"
       // "pair" as defined in numCardsPerMatch
       // else,
