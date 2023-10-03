@@ -39,6 +39,9 @@ export default function Home(this: any) {
   // is off during match checking
   let allowFlip = true
 
+  // disallows checking during first flip at start (if flipAtStart is on)
+  let initFlip=false
+
   ////////////////////////////////////////
 
   // array for cards
