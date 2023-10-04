@@ -285,11 +285,19 @@ export default function Home(this: any) {
               <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} required />
             </div>
           </div>
-          <div className="">
+          <div className="flex flex-row justify-between">
             <button className={`rounded-full px-[1vw] py-[.5vh] ${flipAtStart?"bg-sky-400 dark:bg-blue-800":"bg-gray-600"}`} onClick={(e)=>{
               e.preventDefault()
               setFlipAtStart(!flipAtStart)
             }}>Flip cards over at start: {flipAtStart?"On":"Off"}</button>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="mr-[1vw]">
+              <label htmlFor="init-flip-delay">Number of seconds cards will be flipped over at start:</label>
+            </div>
+            <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
+              <input type="number" step={.25} name="init-flip-delay" id="config-init-flip-delay" className='w-12' defaultValue={1.5} required={flipAtStart} />
+            </div>
           </div>
           <div className="">
             <h6 className='text-red-500 text-xl'><b>{configMsg}</b></h6>
