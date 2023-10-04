@@ -15,6 +15,9 @@ export default function Home(this: any) {
   // amt of ms before card matches
   const cardMatchDelay=750
 
+  // amt of ms for cards to be flipped over when flipAtStart is true
+  const initFlipDelay=1500
+
   ////////////////////////////////////////
 
   ////////////////////////////////////////
@@ -175,7 +178,7 @@ export default function Home(this: any) {
     setInitFlip(true)
     let viewFlipStartTimeout = setTimeout(() => {
       setInitFlip(false)
-    },1500);
+    },initFlipDelay);
   }
 
   // state for what cards are flipped
