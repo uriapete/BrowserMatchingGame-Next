@@ -40,9 +40,7 @@ export default function Home(this: any) {
   let allowFlip = true
 
   // disallows checking during first flip at start (if flipAtStart is on)
-  let initFlip=false
-
-  const [flipStarts, setFlipStarts] = useState(0)
+  const [initFlip, setInitFlip] = useState(false)
 
   ////////////////////////////////////////
 
@@ -169,33 +167,16 @@ export default function Home(this: any) {
 
     createDeck(numCardsSetting,numMatchSetting)
     if(flipAtStart){
-      // flipStart()
-      setFlipStarts(flipStarts+1);
+      flipStart()
     }
   }
 
   function flipStart(){
-    initFlip = true;
-    let cardIDList: number[] = []
-    for (let i = 0; i < cards.length; i++) {
-      const card = cards[i];
-      cardIDList.push(i)
-    }
-    setFlippedCards(cardIDList)
+    setInitFlip(true)
     let viewFlipStartTimeout = setTimeout(() => {
-      flipBack()
-      initFlip=false
+      setInitFlip(false)
     },1500);
   }
-
-  useEffect(() => {
-    flipStart()
-  
-    // return () => {
-    //   second
-    // }
-  }, [flipStarts])
-  
 
   // state for what cards are flipped
   const [flippedCards, setFlippedCards] = useState<number[]>([])
@@ -330,8 +311,8 @@ export default function Home(this: any) {
           }
 
           // check if card has been flipped (if it hasn't already been matched)
-          let flipped = false
-          if(!matched){
+          let flipped = initFlip
+          if(!matched&&!initFlip){
             for (const flippedCard of flippedCards) {
               if (idx === flippedCard) {
                 flipped = true
