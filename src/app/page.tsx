@@ -182,12 +182,10 @@ export default function Home(this: any) {
       cardIDList.push(i)
     }
     setFlippedCards(cardIDList)
-    console.log(cardIDList)
     let viewFlipStartTimeout = setTimeout(() => {
       flipBack()
       initFlip=false
     },1500);
-    console.log(viewFlipStartTimeout)
   }
 
   useEffect(() => {
