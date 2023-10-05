@@ -40,9 +40,7 @@ export default function Home(this: any) {
   let allowFlip = true
 
   // disallows checking during first flip at start (if flipAtStart is on)
-  let initFlip=false
-
-  const [flipStarts, setFlipStarts] = useState(0)
+  const [initFlip, setInitFlip] = useState(false)
 
   ////////////////////////////////////////
 
@@ -119,9 +117,13 @@ export default function Home(this: any) {
     const numCardsStr=formData.get("num-cards")?.toString()
     const numMatchStr=formData.get("num-match")?.toString()
 
+    const numinitFlipDelayStr = formData.get("init-flip-delay")?.toString()
+
     // our number vars
     let numCardsSetting:number
     let numMatchSetting:number
+
+    let numInitFlipDelaySetting:number
 
     // check if num per pair or total cards are:
     // empty
@@ -165,37 +167,36 @@ export default function Home(this: any) {
       return null
     }
 
+    if (flipAtStart) {
+      if (typeof numinitFlipDelayStr === "undefined") {
+        setConfigMsg("Time for cards to be flipped over at the start can't be empty if \"Flip cards over at Start\" is \"on\"!")
+        return null
+      }
+
+      numInitFlipDelaySetting=parseFloat(numinitFlipDelayStr)
+
+      if (isNaN(numCardsSetting)) {
+        setConfigMsg("Invalid number of seconds for cards to be flipped over at start!")
+        return null
+      }
+    }
+
     setConfigMsg("")
 
     createDeck(numCardsSetting,numMatchSetting)
+
     if(flipAtStart){
-      // flipStart()
-      setFlipStarts(flipStarts+1);
+      flipStart(numInitFlipDelaySetting!)
     }
   }
 
-  function flipStart(){
-    initFlip = true;
-    let cardIDList: number[] = []
-    for (let i = 0; i < cards.length; i++) {
-      const card = cards[i];
-      cardIDList.push(i)
-    }
-    setFlippedCards(cardIDList)
+  function flipStart(flipDelaySecs:number){
+    const flipDelay=flipDelaySecs*1000
+    setInitFlip(true)
     let viewFlipStartTimeout = setTimeout(() => {
-      flipBack()
-      initFlip=false
-    },1500);
+      setInitFlip(false)
+    },flipDelay);
   }
-
-  useEffect(() => {
-    flipStart()
-  
-    // return () => {
-    //   second
-    // }
-  }, [flipStarts])
-  
 
   // state for what cards are flipped
   const [flippedCards, setFlippedCards] = useState<number[]>([])
@@ -301,11 +302,19 @@ export default function Home(this: any) {
               <input type="number" name="num-match" id="config-num-match" className='w-12' defaultValue={2} required />
             </div>
           </div>
-          <div className="">
+          <div className="flex flex-row justify-between">
             <button className={`rounded-full px-[1vw] py-[.5vh] ${flipAtStart?"bg-sky-400 dark:bg-blue-800":"bg-gray-600"}`} onClick={(e)=>{
               e.preventDefault()
               setFlipAtStart(!flipAtStart)
             }}>Flip cards over at start: {flipAtStart?"On":"Off"}</button>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="mr-[1vw]">
+              <label htmlFor="init-flip-delay">Number of seconds cards will be flipped over at start:</label>
+            </div>
+            <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
+              <input type="number" step={.25} name="init-flip-delay" id="config-init-flip-delay" className='w-12' defaultValue={1.5} required={flipAtStart} />
+            </div>
           </div>
           <div className="">
             <h6 className='text-red-500 text-xl'><b>{configMsg}</b></h6>
@@ -330,8 +339,8 @@ export default function Home(this: any) {
           }
 
           // check if card has been flipped (if it hasn't already been matched)
-          let flipped = false
-          if(!matched){
+          let flipped = initFlip
+          if(!matched&&!initFlip){
             for (const flippedCard of flippedCards) {
               if (idx === flippedCard) {
                 flipped = true
