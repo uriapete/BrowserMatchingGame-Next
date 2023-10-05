@@ -15,9 +15,6 @@ export default function Home(this: any) {
   // amt of ms before card matches
   const cardMatchDelay=750
 
-  // amt of ms for cards to be flipped over when flipAtStart is true
-  const initFlipDelay=1500
-
   ////////////////////////////////////////
 
   ////////////////////////////////////////
@@ -120,9 +117,13 @@ export default function Home(this: any) {
     const numCardsStr=formData.get("num-cards")?.toString()
     const numMatchStr=formData.get("num-match")?.toString()
 
+    const numinitFlipDelayStr = formData.get("init-flip-delay")?.toString()
+
     // our number vars
     let numCardsSetting:number
     let numMatchSetting:number
+
+    let numInitFlipDelaySetting:number
 
     // check if num per pair or total cards are:
     // empty
@@ -166,19 +167,35 @@ export default function Home(this: any) {
       return null
     }
 
+    if (flipAtStart) {
+      if (typeof numinitFlipDelayStr === "undefined") {
+        setConfigMsg("Time for cards to be flipped over at the start can't be empty if \"Flip cards over at Start\" is \"on\"!")
+        return null
+      }
+
+      numInitFlipDelaySetting=parseFloat(numinitFlipDelayStr)
+
+      if (isNaN(numCardsSetting)) {
+        setConfigMsg("Invalid number of seconds for cards to be flipped over at start!")
+        return null
+      }
+    }
+
     setConfigMsg("")
 
     createDeck(numCardsSetting,numMatchSetting)
+
     if(flipAtStart){
-      flipStart()
+      flipStart(numInitFlipDelaySetting!)
     }
   }
 
-  function flipStart(){
+  function flipStart(flipDelaySecs:number){
+    const flipDelay=flipDelaySecs*1000
     setInitFlip(true)
     let viewFlipStartTimeout = setTimeout(() => {
       setInitFlip(false)
-    },initFlipDelay);
+    },flipDelay);
   }
 
   // state for what cards are flipped
