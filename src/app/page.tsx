@@ -35,6 +35,8 @@ export default function Home(this: any) {
   ////////////////////////////////////////
   // switches
 
+  const [gameActive, setGameActive] = useState(false)
+
   // whether or not card flipping is allowed
   // is off during match checking
   let allowFlip = true
@@ -188,6 +190,8 @@ export default function Home(this: any) {
     if(flipAtStart){
       flipStart(numInitFlipDelaySetting!)
     }
+
+    setGameActive(true)
   }
 
   function flipStart(flipDelaySecs:number){
@@ -280,6 +284,11 @@ export default function Home(this: any) {
     handleMatchCheck()
   }, [flippedCards])
 
+  useEffect(() => {
+    if(matchedCards.length>=cards.length){
+      setGameActive(false)
+    }
+  }, [matchedCards])
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
