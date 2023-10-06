@@ -45,10 +45,25 @@ export default function Home(this: any) {
   const [initFlip, setInitFlip] = useState(false)
 
   ////////////////////////////////////////
+  
+  ////////////////////////////////////////
+  // states and other top level vars
+
+  // our state to use for error msgs in config
+  // ex "you need more than 0 cards!"
+  const [configMsg, setConfigMsg] = useState("")
 
   // array for cards
   // const cards:ICard[]=[]
   const [cards, setCards] = useState<ICard[]>([])
+
+  // state for what cards are flipped
+  const [flippedCards, setFlippedCards] = useState<number[]>([])
+
+  // state for what cards are matched
+  const [matchedCards, setMatchedCards] = useState<number[]>([])
+  
+  ////////////////////////////////////////
 
   // fn for initting the deck
   function createDeck(totalCards:number,numPerPair:number){
@@ -101,10 +116,6 @@ export default function Home(this: any) {
     // now, set our deck
     setCards(shuffledDeck)
   }
-
-  // our state to use for error msgs in config
-  // ex "you need more than 0 cards!"
-  const [configMsg, setConfigMsg] = useState("")
 
   // fn to init game start
   function handleGameStart(e:FormEvent<HTMLFormElement>){
@@ -201,12 +212,6 @@ export default function Home(this: any) {
       setInitFlip(false)
     },flipDelay);
   }
-
-  // state for what cards are flipped
-  const [flippedCards, setFlippedCards] = useState<number[]>([])
-
-  // state for what cards are matched
-  const [matchedCards, setMatchedCards] = useState<number[]>([])
 
   // flip a card
   function flipCardToFrontSide(cardIdx: number) {
