@@ -62,7 +62,8 @@ export default function Home(this: any) {
 
   // state for what cards are matched
   const [matchedCards, setMatchedCards] = useState<number[]>([])
-  
+
+  const [congratsMsg, setCongratsMsg] = useState("")
   ////////////////////////////////////////
 
   // fn for initting the deck
