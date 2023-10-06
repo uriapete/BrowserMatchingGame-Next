@@ -196,6 +196,7 @@ export default function Home(this: any) {
     }
 
     setConfigMsg("")
+    setCongratsMsg("")
 
     createDeck(numCardsSetting,numMatchSetting)
 
@@ -293,6 +294,7 @@ export default function Home(this: any) {
   useEffect(() => {
     if(matchedCards.length>=cards.length){
       setGameActive(false)
+      setCongratsMsg("Congratulations! You finished the game!")
     }
   }, [matchedCards])
 
