@@ -341,7 +341,7 @@ export default function Home(this: any) {
           </div>
         </form>
       </div>
-      <div className="congrats-msg">
+      <div className="congrats-msg mb-3.5">
         <h3 className='text-2xl'>{congratsMsg}</h3>
       </div>
       <div className={`gameboardcontainer mx-auto grid grid-cols-${cardsPerRow}`}>
