@@ -339,6 +339,9 @@ export default function Home(this: any) {
           </div>
         </form>
       </div>
+      <div className="congrats-msg">
+        <h3 className='text-2xl'>{congratsMsg}</h3>
+      </div>
       <div className={`gameboardcontainer mx-auto grid grid-cols-${cardsPerRow}`}>
         {cards.map((card, idx) => {
           // get frnttxt of card
