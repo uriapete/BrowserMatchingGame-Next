@@ -45,10 +45,26 @@ export default function Home(this: any) {
   const [initFlip, setInitFlip] = useState(false)
 
   ////////////////////////////////////////
+  
+  ////////////////////////////////////////
+  // states and other top level vars
+
+  // our state to use for error msgs in config
+  // ex "you need more than 0 cards!"
+  const [configMsg, setConfigMsg] = useState("")
 
   // array for cards
   // const cards:ICard[]=[]
   const [cards, setCards] = useState<ICard[]>([])
+
+  // state for what cards are flipped
+  const [flippedCards, setFlippedCards] = useState<number[]>([])
+
+  // state for what cards are matched
+  const [matchedCards, setMatchedCards] = useState<number[]>([])
+
+  const [congratsMsg, setCongratsMsg] = useState("")
+  ////////////////////////////////////////
 
   // fn for initting the deck
   function createDeck(totalCards:number,numPerPair:number){
@@ -101,10 +117,6 @@ export default function Home(this: any) {
     // now, set our deck
     setCards(shuffledDeck)
   }
-
-  // our state to use for error msgs in config
-  // ex "you need more than 0 cards!"
-  const [configMsg, setConfigMsg] = useState("")
 
   // fn to init game start
   function handleGameStart(e:FormEvent<HTMLFormElement>){
@@ -184,6 +196,7 @@ export default function Home(this: any) {
     }
 
     setConfigMsg("")
+    setCongratsMsg("")
 
     createDeck(numCardsSetting,numMatchSetting)
 
@@ -201,12 +214,6 @@ export default function Home(this: any) {
       setInitFlip(false)
     },flipDelay);
   }
-
-  // state for what cards are flipped
-  const [flippedCards, setFlippedCards] = useState<number[]>([])
-
-  // state for what cards are matched
-  const [matchedCards, setMatchedCards] = useState<number[]>([])
 
   // flip a card
   function flipCardToFrontSide(cardIdx: number) {
@@ -287,6 +294,7 @@ export default function Home(this: any) {
   useEffect(() => {
     if(matchedCards.length>=cards.length){
       setGameActive(false)
+      setCongratsMsg("Congratulations! You finished the game!")
     }
   }, [matchedCards])
 
@@ -332,6 +340,9 @@ export default function Home(this: any) {
             <button type="submit" className='bg-sky-400 text-white rounded px-[1vw] py-[1vh]'>{"Start!"}</button>
           </div>
         </form>
+      </div>
+      <div className="congrats-msg mb-3.5">
+        <h3 className='text-2xl'>{congratsMsg}</h3>
       </div>
       <div className={`gameboardcontainer mx-auto grid grid-cols-${cardsPerRow}`}>
         {cards.map((card, idx) => {
