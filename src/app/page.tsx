@@ -314,7 +314,7 @@ export default function Home(this: any) {
   // effect - check if all cards are matched
   // if so, congrats msg
   useEffect(() => {
-    if (matchedCards.length >= cards.length) {
+    if (matchedCards.length >= cards.length&&matchedCards.length>0) {
       setGameActive(false)
       setCongratsMsg("Congratulations! You finished the game!")
     }
