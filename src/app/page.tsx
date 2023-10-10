@@ -35,6 +35,7 @@ export default function Home(this: any) {
   ////////////////////////////////////////
   // switches
 
+  // state to indicate if game is active/started
   const [gameActive, setGameActive] = useState(false)
 
   // whether or not card flipping is allowed
@@ -63,6 +64,8 @@ export default function Home(this: any) {
   // state for what cards are matched
   const [matchedCards, setMatchedCards] = useState<number[]>([])
 
+  // state for congrats msg
+  // ex "you won!"
   const [congratsMsg, setCongratsMsg] = useState("")
   ////////////////////////////////////////
 
@@ -137,7 +140,10 @@ export default function Home(this: any) {
     let numCardsSetting: number
     let numMatchSetting: number
 
+    // var for how much time to flip card over at start
     let numInitFlipDelaySetting: number
+
+    // for numCards/March:
 
     // check if num per pair or total cards are:
     // empty
@@ -181,6 +187,9 @@ export default function Home(this: any) {
       return null
     }
 
+    // if user enabled flipAtStart:
+    // sanitize number of seconds to flip over
+    // then set it to delay
     if (flipAtStart) {
       if (typeof numinitFlipDelayStr === "undefined") {
         setConfigMsg("Time for cards to be flipped over at the start can't be empty if \"Flip cards over at Start\" is \"on\"!")
@@ -195,21 +204,32 @@ export default function Home(this: any) {
       }
     }
 
+    // clean messages
     setConfigMsg("")
     setCongratsMsg("")
 
+    // create the deck
     createDeck(numCardsSetting, numMatchSetting)
 
+    // flip cards over at the start if enabled
     if (flipAtStart) {
       flipStart(numInitFlipDelaySetting!)
     }
 
+    // set the game state to active
     setGameActive(true)
   }
 
+  // function for flipping cards over at the start of the game
+  // args: num of secs to flip over
   function flipStart(flipDelaySecs: number) {
+    // convert delay from secs so ms
     const flipDelay = flipDelaySecs * 1000
+
+    // set init flip to true to prevent flipover
     setInitFlip(true)
+
+    // flip cards back over after flipDelay ms
     let viewFlipStartTimeout = setTimeout(() => {
       setInitFlip(false)
     }, flipDelay);
@@ -291,6 +311,8 @@ export default function Home(this: any) {
     handleMatchCheck()
   }, [flippedCards])
 
+  // effect - check if all cards are matched
+  // if so, congrats msg
   useEffect(() => {
     if (matchedCards.length >= cards.length) {
       setGameActive(false)
