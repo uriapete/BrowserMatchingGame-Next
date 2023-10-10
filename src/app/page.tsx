@@ -38,12 +38,12 @@ export default function Home(this: any) {
   // state to indicate if game is active/started
   const [gameActive, setGameActive] = useState(false)
 
-  // whether or not card flipping is allowed
-  // is off during match checking
-  let allowFlip = true
-
   // disallows checking during first flip at start (if flipAtStart is on)
   const [initFlip, setInitFlip] = useState(false)
+
+  // whether or not card flipping is allowed
+  // is off during match checking
+  let allowFlip = !initFlip
 
   ////////////////////////////////////////
 
