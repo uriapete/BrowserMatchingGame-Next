@@ -30,6 +30,10 @@ export default function Home(this: any) {
   // state whether cards should flip over at the start
   const [flipAtStart, setFlipAtStart] = useState(true)
 
+  // max numbers of strikes - how many strikes b4 you lose
+  // 0 means disabled
+  const [maxStrikes, setMaxStrikes] = useState(0)
+
   ////////////////////////////////////////
 
   ////////////////////////////////////////
@@ -68,6 +72,9 @@ export default function Home(this: any) {
   // state for congrats msg
   // ex "you won!"
   const [congratsMsg, setCongratsMsg] = useState("")
+
+  // state for how many strikes player has
+  const [strikes, setStrikes] = useState(0)
   ////////////////////////////////////////
 
   // fn for initting the deck
