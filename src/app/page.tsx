@@ -43,7 +43,8 @@ export default function Home(this: any) {
 
   // whether or not card flipping is allowed
   // is off during match checking
-  let allowFlip = !initFlip
+  // let allowFlip = !initFlip
+  const [allowFlip, setAllowFlip] = useState(false)
 
   ////////////////////////////////////////
 
@@ -218,6 +219,9 @@ export default function Home(this: any) {
 
     // set the game state to active
     setGameActive(true)
+
+    // allow flip now
+    setAllowFlip(true)
   }
 
   // function for flipping cards over at the start of the game
@@ -243,29 +247,7 @@ export default function Home(this: any) {
   // flip all cards back
   function flipBack() {
     setFlippedCards([])
-  }
-
-  // fn for checking flipped cards for a match
-  function checkMatch() {
-    // first flipped card will our anchor
-    const matchTxt = cards[flippedCards[0]].frontTxt
-
-    // all flipped cards should match our anchor
-    for (let i = 1; i < flippedCards.length; i++) {
-      const elementTxt = cards[flippedCards[i]].frontTxt
-      // if not, then no match
-      if (elementTxt !== matchTxt) {
-        return false
-      }
-    }
-    return true
-  }
-
-  // fn for confirming a match
-  // should run AFTER checkMatch returns true
-  // adds all flipped cards to matchedCards
-  function confirmMatch() {
-    setMatchedCards([...matchedCards, ...flippedCards])
+    setAllowFlip(true)
   }
 
   // function to run upon card flip
@@ -278,6 +260,29 @@ export default function Home(this: any) {
   // effect to run upon update of flippedCards
   // this checks the flipped cards for a match
   useEffect(() => {
+    // fn for checking flipped cards for a match
+    function checkMatch() {
+      // first flipped card will our anchor
+      const matchTxt = cards[flippedCards[0]].frontTxt
+
+      // all flipped cards should match our anchor
+      for (let i = 1; i < flippedCards.length; i++) {
+        const elementTxt = cards[flippedCards[i]].frontTxt
+        // if not, then no match
+        if (elementTxt !== matchTxt) {
+          return false
+        }
+      }
+      return true
+    }
+
+    // fn for confirming a match
+    // should run AFTER checkMatch returns true
+    // adds all flipped cards to matchedCards
+    function confirmMatch() {
+      setMatchedCards([...matchedCards, ...flippedCards])
+    }
+
     function handleMatchCheck() {
       // don't check matches during first flipAtStart
       if (initFlip) {
@@ -293,7 +298,8 @@ export default function Home(this: any) {
 
       // test passed, now checking for a match
       // disable flipping until we're done
-      allowFlip = false
+      // allowFlip = false
+      setAllowFlip(false)
 
       // let player see their mistake for a second
       // (time defined by cardMatchDelay)
@@ -308,8 +314,10 @@ export default function Home(this: any) {
         flipBack()
       }, cardMatchDelay);
     }
+
+    // execute match check
     handleMatchCheck()
-  }, [flippedCards])
+  }, [flippedCards,initFlip,numCardsPerMatch,cards,matchedCards])
 
   // effect - check if all cards are matched
   // if so, congrats msg
@@ -318,7 +326,7 @@ export default function Home(this: any) {
       setGameActive(false)
       setCongratsMsg("Congratulations! You finished the game!")
     }
-  }, [matchedCards])
+  }, [matchedCards, cards.length])
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
