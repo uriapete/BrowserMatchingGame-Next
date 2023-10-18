@@ -30,6 +30,9 @@ export default function Home(this: any) {
   // state whether cards should flip over at the start
   const [flipAtStart, setFlipAtStart] = useState(true)
 
+  // strikes are enabled?
+  const [enableStrikes, setEnableStrikes] = useState(false)
+
   // max numbers of strikes - how many strikes b4 you lose
   // 0 means disabled
   const [maxStrikes, setMaxStrikes] = useState(0)
@@ -368,6 +371,19 @@ export default function Home(this: any) {
             </div>
             <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
               <input type="number" step={.25} name="init-flip-delay" id="config-init-flip-delay" className='w-12' defaultValue={1.5} required={flipAtStart} />
+            </div>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="mr-[1vw]">
+              <label htmlFor="init-flip-delay">
+                <button className={`rounded-full px-[1vw] py-[.5vh] ${enableStrikes ? "bg-sky-400 dark:bg-blue-800" : "bg-gray-600"}`} onClick={(e) => {
+                  e.preventDefault()
+                  setEnableStrikes(!enableStrikes)
+                }}>Strikes: {enableStrikes ? "On" : "Off"}</button>
+              </label>
+            </div>
+            <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
+              <input type="number" step={1} name="init-flip-delay" id="config-init-flip-delay" className='w-12' defaultValue={3} required={flipAtStart} />
             </div>
           </div>
           <div className="">
