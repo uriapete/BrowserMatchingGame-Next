@@ -214,7 +214,7 @@ export default function Home(this: any) {
 
       numInitFlipDelaySetting = parseFloat(numinitFlipDelayStr)
 
-      if (isNaN(numCardsSetting)) {
+      if (isNaN(numInitFlipDelaySetting)||numInitFlipDelaySetting<=0) {
         setConfigMsg("Invalid number of seconds for cards to be flipped over at start!")
         return null
       }
@@ -332,6 +332,10 @@ export default function Home(this: any) {
         return null
       }
 
+      if(!gameActive){
+        return null
+      }
+
       // only check for match once we have enough cards for a "pair"
       // "pair" as defined in numCardsPerMatch
       // else,
@@ -384,11 +388,11 @@ export default function Home(this: any) {
   // effect - check if all cards are matched
   // if so, congrats msg
   useEffect(() => {
-    if (matchedCards.length >= cards.length&&matchedCards.length>0) {
+    if (matchedCards.length >= cards.length&&matchedCards.length>0&&gameActive) {
       setGameActive(false)
       setCongratsMsg("Congratulations! You finished the game!")
     }
-  }, [matchedCards, cards.length])
+  }, [matchedCards, cards.length,gameActive])
 
   function StrikesDisplay() {
     let strikesArr:ReactElement[]=[]
