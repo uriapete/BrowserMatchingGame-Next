@@ -289,6 +289,10 @@ export default function Home(this: any) {
         return null
       }
 
+      if(!gameActive){
+        return null
+      }
+
       // only check for match once we have enough cards for a "pair"
       // "pair" as defined in numCardsPerMatch
       // else,
@@ -317,16 +321,16 @@ export default function Home(this: any) {
 
     // execute match check
     handleMatchCheck()
-  }, [flippedCards,initFlip,numCardsPerMatch,cards,matchedCards])
+  }, [flippedCards,initFlip,numCardsPerMatch,cards,matchedCards,gameActive])
 
   // effect - check if all cards are matched
   // if so, congrats msg
   useEffect(() => {
-    if (matchedCards.length >= cards.length&&matchedCards.length>0) {
+    if (matchedCards.length >= cards.length&&matchedCards.length>0&&gameActive) {
       setGameActive(false)
       setCongratsMsg("Congratulations! You finished the game!")
     }
-  }, [matchedCards, cards.length])
+  }, [matchedCards, cards.length,gameActive])
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
