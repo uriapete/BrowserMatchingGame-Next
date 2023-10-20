@@ -367,6 +367,30 @@ export default function Home(this: any) {
     }
   }, [matchedCards, cards.length])
 
+  function StrikesDisplay() {
+    let strikesArr:ReactElement[]=[]
+    if(maxStrikes<=0){
+      return strikesArr
+    }
+    const strikeStyle = "px-1 mx-1 border-2 border-white rounder-md text-white"
+    for (let i = 0; i < maxStrikes; i++) {
+      if(i<strikes){
+        strikesArr.push(
+          <span className={`${strikeStyle} bg-red-600`}>
+            X
+          </span>
+        )
+      } else {
+        strikesArr.push(
+          <span className={`${strikeStyle} bg-sky-300`}>
+            O
+          </span>
+        )
+      }
+    }
+    return strikesArr
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
       <h1 className="text-4xl">Matching Game!</h1>
@@ -431,7 +455,8 @@ export default function Home(this: any) {
         // for redundancy
         enableStrikes?(
           <div className="my-3.5 flex flex-row">
-            <h3 className='text-2xl'>Strikes:</h3>
+            <h3 className='text-2xl'>Strikes: </h3>
+            <StrikesDisplay />
           </div>
         )
         :
