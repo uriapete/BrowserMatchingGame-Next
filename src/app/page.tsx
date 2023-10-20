@@ -229,12 +229,18 @@ export default function Home(this: any) {
         return null
       }
 
-      numStrikes = parseFloat(numStrikesStr)
+      numStrikes = parseInt(numStrikesStr)
 
       if (isNaN(numStrikes)||numStrikes<1) {
         setConfigMsg("Invalid number of strikes! Must be at least 1.")
         return null
       }
+
+      setMaxStrikes(numStrikes)
+    }
+    else{
+      // if strikes are not enabled, set it to 0 to proper disable it
+      setMaxStrikes(0)
     }
 
 
