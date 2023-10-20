@@ -453,7 +453,7 @@ export default function Home(this: any) {
       {
         // add max strikes to this too
         // for redundancy
-        enableStrikes?(
+        maxStrikes>0?(
           <div className="my-3.5 flex flex-row">
             <h3 className='text-2xl'>Strikes: </h3>
             <StrikesDisplay />
