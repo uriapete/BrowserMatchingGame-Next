@@ -214,7 +214,7 @@ export default function Home(this: any) {
 
       numInitFlipDelaySetting = parseFloat(numinitFlipDelayStr)
 
-      if (isNaN(numInitFlipDelaySetting)||numInitFlipDelaySetting<=0) {
+      if (isNaN(numInitFlipDelaySetting) || numInitFlipDelaySetting <= 0) {
         setConfigMsg("Invalid number of seconds for cards to be flipped over at start!")
         return null
       }
@@ -332,7 +332,7 @@ export default function Home(this: any) {
         return null
       }
 
-      if(!gameActive){
+      if (!gameActive) {
         return null
       }
 
@@ -368,39 +368,59 @@ export default function Home(this: any) {
 
     // execute match check
     handleMatchCheck()
-  }, [flippedCards, initFlip, numCardsPerMatch, cards, matchedCards, maxStrikes, strikes])
+  }, [flippedCards, initFlip, numCardsPerMatch, cards, matchedCards, maxStrikes, strikes, gameActive])
 
   // effect - check strikes
   useEffect(() => {
+    // fn
     function checkStrikes() {
+      // if strikes are disabled or strikes is less than maxStrikes
+      // null
       if (maxStrikes < 1) {
         return null
       }
       if (strikes < maxStrikes) {
         return null
       }
+
+      // else, game over
       setGameActive(false)
       setCongratsMsg("Game over! Ran out of strikes...")
     }
+
+    // execute this fn
     checkStrikes()
   }, [cards, maxStrikes, strikes, flipCardToFrontSide])
 
   // effect - check if all cards are matched
   // if so, congrats msg
   useEffect(() => {
-    if (matchedCards.length >= cards.length&&matchedCards.length>0&&gameActive) {
+    if (matchedCards.length >= cards.length && matchedCards.length > 0 && gameActive) {
       setGameActive(false)
       setCongratsMsg("Congratulations! You finished the game!")
     }
-  }, [matchedCards, cards.length,gameActive])
+  }, [matchedCards, cards.length, gameActive])
 
-  function StrikesDisplay() {
+  // component for displaying strikes
+  // because we need to loop numbers, so we can't map it
+  function StrikesDisplay(): ReactElement[] {
+    // return variable
     let strikesArr: ReactElement[] = []
+
+    // if strikes are disabled, return empty []
     if (maxStrikes <= 0) {
       return strikesArr
     }
+
+    // style for each strike span
     const strikeStyle = "px-1 mx-1 border-2 border-white rounder-md text-white"
+
+    // now let's loop to maxStrikes
     for (let i = 0; i < maxStrikes; i++) {
+      // for each strike:
+      // if our counter is less than var strikes
+      // mark a strike
+      // else mark O
       if (i < strikes) {
         strikesArr.push(
           <span className={`${strikeStyle} bg-red-600`}>
@@ -415,6 +435,7 @@ export default function Home(this: any) {
         )
       }
     }
+    // then return our strikes[]
     return strikesArr
   }
 
