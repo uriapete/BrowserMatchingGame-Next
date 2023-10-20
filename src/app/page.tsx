@@ -157,7 +157,7 @@ export default function Home(this: any) {
     let numInitFlipDelaySetting: number
 
     // var for num or strikes
-    let numStrikes:number
+    let numStrikes: number
 
     // for numCards/March:
 
@@ -233,14 +233,14 @@ export default function Home(this: any) {
 
       numStrikes = parseInt(numStrikesStr)
 
-      if (isNaN(numStrikes)||numStrikes<1) {
+      if (isNaN(numStrikes) || numStrikes < 1) {
         setConfigMsg("Invalid number of strikes! Must be at least 1.")
         return null
       }
 
       setMaxStrikes(numStrikes)
     }
-    else{
+    else {
       // if strikes are not enabled, set it to 0 to proper disable it
       setMaxStrikes(0)
     }
@@ -357,9 +357,9 @@ export default function Home(this: any) {
         const chkMtch = checkMatch()
         if (chkMtch) {
           confirmMatch()
-        }else{
-          if(maxStrikes>0){
-            setStrikes(strikes+1)
+        } else {
+          if (maxStrikes > 0) {
+            setStrikes(strikes + 1)
           }
         }
         flipBack()
@@ -368,22 +368,22 @@ export default function Home(this: any) {
 
     // execute match check
     handleMatchCheck()
-  }, [flippedCards,initFlip,numCardsPerMatch,cards,matchedCards,maxStrikes,strikes])
+  }, [flippedCards, initFlip, numCardsPerMatch, cards, matchedCards, maxStrikes, strikes])
 
   // effect - check strikes
   useEffect(() => {
-    function checkStrikes(){
-      if(maxStrikes<1){
+    function checkStrikes() {
+      if (maxStrikes < 1) {
         return null
       }
-      if(strikes<maxStrikes){
+      if (strikes < maxStrikes) {
         return null
       }
       setGameActive(false)
       setCongratsMsg("Game over! Ran out of strikes...")
     }
     checkStrikes()
-  }, [cards,maxStrikes,strikes,flipCardToFrontSide])
+  }, [cards, maxStrikes, strikes, flipCardToFrontSide])
 
   // effect - check if all cards are matched
   // if so, congrats msg
@@ -395,13 +395,13 @@ export default function Home(this: any) {
   }, [matchedCards, cards.length,gameActive])
 
   function StrikesDisplay() {
-    let strikesArr:ReactElement[]=[]
-    if(maxStrikes<=0){
+    let strikesArr: ReactElement[] = []
+    if (maxStrikes <= 0) {
       return strikesArr
     }
     const strikeStyle = "px-1 mx-1 border-2 border-white rounder-md text-white"
     for (let i = 0; i < maxStrikes; i++) {
-      if(i<strikes){
+      if (i < strikes) {
         strikesArr.push(
           <span className={`${strikeStyle} bg-red-600`}>
             X
@@ -480,13 +480,13 @@ export default function Home(this: any) {
       {
         // add max strikes to this too
         // for redundancy
-        maxStrikes>0?(
+        maxStrikes > 0 ? (
           <div className="my-3.5 flex flex-row">
             <h3 className='text-2xl'>Strikes: </h3>
             <StrikesDisplay />
           </div>
         )
-        :
+          :
           ""
       }
       <div className={`gameboardcontainer mx-auto grid grid-cols-${cardsPerRow}`}>
@@ -508,7 +508,7 @@ export default function Home(this: any) {
           if (!matched && !flipped) {
             if (!gameActive) {
               flipped = !gameActive
-            }else{
+            } else {
               for (const flippedCard of flippedCards) {
                 if (idx === flippedCard) {
                   flipped = true
