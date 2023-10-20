@@ -1,6 +1,6 @@
 "use client"
 import Card from '@/components/card'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, ReactElement, useEffect, useState } from 'react'
 
 interface ICard {
   frontTxt: string
