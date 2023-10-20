@@ -1,6 +1,6 @@
 "use client"
 import Card from '@/components/card'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, ReactElement, useCallback, useEffect, useState } from 'react'
 
 interface ICard {
   frontTxt: string
@@ -29,6 +29,13 @@ export default function Home(this: any) {
 
   // state whether cards should flip over at the start
   const [flipAtStart, setFlipAtStart] = useState(true)
+
+  // strikes are enabled?
+  const [enableStrikes, setEnableStrikes] = useState(false)
+
+  // max numbers of strikes - how many strikes b4 you lose
+  // 0 means disabled
+  const [maxStrikes, setMaxStrikes] = useState(0)
 
   ////////////////////////////////////////
 
@@ -68,6 +75,9 @@ export default function Home(this: any) {
   // state for congrats msg
   // ex "you won!"
   const [congratsMsg, setCongratsMsg] = useState("")
+
+  // state for how many strikes player has
+  const [strikes, setStrikes] = useState(0)
   ////////////////////////////////////////
 
   // fn for initting the deck
@@ -137,12 +147,17 @@ export default function Home(this: any) {
 
     const numinitFlipDelayStr = formData.get("init-flip-delay")?.toString()
 
+    const numStrikesStr = formData.get("num-strikes")?.toString()
+
     // our number vars
     let numCardsSetting: number
     let numMatchSetting: number
 
     // var for how much time to flip card over at start
     let numInitFlipDelaySetting: number
+
+    // var for num or strikes
+    let numStrikes: number
 
     // for numCards/March:
 
@@ -205,6 +220,31 @@ export default function Home(this: any) {
       }
     }
 
+    setStrikes(0)
+
+    // if user enabled strikes:
+    // sanitize number of strikes
+    // then set it to maxStrikes
+    if (enableStrikes) {
+      if (typeof numStrikesStr === "undefined") {
+        setConfigMsg("Number of strikes can't be empty if \"Strikes\" is \"on\"!")
+        return null
+      }
+
+      numStrikes = parseInt(numStrikesStr)
+
+      if (isNaN(numStrikes) || numStrikes < 1) {
+        setConfigMsg("Invalid number of strikes! Must be at least 1.")
+        return null
+      }
+
+      setMaxStrikes(numStrikes)
+    }
+    else {
+      // if strikes are not enabled, set it to 0 to proper disable it
+      setMaxStrikes(0)
+    }
+
     // clean messages
     setConfigMsg("")
     setCongratsMsg("")
@@ -240,9 +280,12 @@ export default function Home(this: any) {
   }
 
   // flip a card
-  function flipCardToFrontSide(cardIdx: number) {
-    setFlippedCards([...flippedCards, cardIdx])
-  }
+  const flipCardToFrontSide = useCallback(
+    (cardIdx: number) => {
+      setFlippedCards([...flippedCards, cardIdx])
+    },
+    [flippedCards],
+  )
 
   // flip all cards back
   function flipBack() {
@@ -314,6 +357,10 @@ export default function Home(this: any) {
         const chkMtch = checkMatch()
         if (chkMtch) {
           confirmMatch()
+        } else {
+          if (maxStrikes > 0) {
+            setStrikes(strikes + 1)
+          }
         }
         flipBack()
       }, cardMatchDelay);
@@ -321,7 +368,22 @@ export default function Home(this: any) {
 
     // execute match check
     handleMatchCheck()
-  }, [flippedCards,initFlip,numCardsPerMatch,cards,matchedCards,gameActive])
+  }, [flippedCards, initFlip, numCardsPerMatch, cards, matchedCards, maxStrikes, strikes])
+
+  // effect - check strikes
+  useEffect(() => {
+    function checkStrikes() {
+      if (maxStrikes < 1) {
+        return null
+      }
+      if (strikes < maxStrikes) {
+        return null
+      }
+      setGameActive(false)
+      setCongratsMsg("Game over! Ran out of strikes...")
+    }
+    checkStrikes()
+  }, [cards, maxStrikes, strikes, flipCardToFrontSide])
 
   // effect - check if all cards are matched
   // if so, congrats msg
@@ -331,6 +393,30 @@ export default function Home(this: any) {
       setCongratsMsg("Congratulations! You finished the game!")
     }
   }, [matchedCards, cards.length,gameActive])
+
+  function StrikesDisplay() {
+    let strikesArr: ReactElement[] = []
+    if (maxStrikes <= 0) {
+      return strikesArr
+    }
+    const strikeStyle = "px-1 mx-1 border-2 border-white rounder-md text-white"
+    for (let i = 0; i < maxStrikes; i++) {
+      if (i < strikes) {
+        strikesArr.push(
+          <span className={`${strikeStyle} bg-red-600`}>
+            X
+          </span>
+        )
+      } else {
+        strikesArr.push(
+          <span className={`${strikeStyle} bg-sky-300`}>
+            O
+          </span>
+        )
+      }
+    }
+    return strikesArr
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center p-6">
@@ -367,6 +453,19 @@ export default function Home(this: any) {
               <input type="number" step={.25} name="init-flip-delay" id="config-init-flip-delay" className='w-12' defaultValue={1.5} required={flipAtStart} />
             </div>
           </div>
+          <div className="flex flex-row justify-between">
+            <div className="mr-[1vw]">
+              <label htmlFor="init-flip-delay">
+                <button className={`rounded-full px-[1vw] py-[.5vh] ${enableStrikes ? "bg-sky-400 dark:bg-blue-800" : "bg-gray-600"}`} onClick={(e) => {
+                  e.preventDefault()
+                  setEnableStrikes(!enableStrikes)
+                }}>Strikes: {enableStrikes ? "On" : "Off"}</button>
+              </label>
+            </div>
+            <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
+              <input type="number" step={1} name="num-strikes" id="config-num-strikes" className='w-12' defaultValue={3} required={flipAtStart} />
+            </div>
+          </div>
           <div className="">
             <h6 className='text-red-500 text-xl'><b>{configMsg}</b></h6>
           </div>
@@ -375,9 +474,21 @@ export default function Home(this: any) {
           </div>
         </form>
       </div>
-      <div className="congrats-msg mb-3.5">
+      <div className="congrats-msg">
         <h3 className='text-2xl'>{congratsMsg}</h3>
       </div>
+      {
+        // add max strikes to this too
+        // for redundancy
+        maxStrikes > 0 ? (
+          <div className="my-3.5 flex flex-row">
+            <h3 className='text-2xl'>Strikes: </h3>
+            <StrikesDisplay />
+          </div>
+        )
+          :
+          ""
+      }
       <div className={`gameboardcontainer mx-auto grid grid-cols-${cardsPerRow}`}>
         {cards.map((card, idx) => {
           // get frnttxt of card
@@ -394,11 +505,15 @@ export default function Home(this: any) {
 
           // check if card has been flipped (if it hasn't already been matched)
           let flipped = initFlip
-          if (!matched && !initFlip) {
-            for (const flippedCard of flippedCards) {
-              if (idx === flippedCard) {
-                flipped = true
-                break
+          if (!matched && !flipped) {
+            if (!gameActive) {
+              flipped = !gameActive
+            } else {
+              for (const flippedCard of flippedCards) {
+                if (idx === flippedCard) {
+                  flipped = true
+                  break
+                }
               }
             }
           }
