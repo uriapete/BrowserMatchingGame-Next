@@ -280,9 +280,12 @@ export default function Home(this: any) {
   }
 
   // flip a card
-  function flipCardToFrontSide(cardIdx: number) {
-    setFlippedCards([...flippedCards, cardIdx])
-  }
+  const flipCardToFrontSide = useCallback(
+    (cardIdx: number) => {
+      setFlippedCards([...flippedCards, cardIdx])
+    },
+    [flippedCards],
+  )
 
   // flip all cards back
   function flipBack() {
