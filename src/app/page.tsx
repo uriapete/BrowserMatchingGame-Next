@@ -1,6 +1,6 @@
 "use client"
 import Card from '@/components/card'
-import { FormEvent, ReactElement, useEffect, useState } from 'react'
+import { FormEvent, ReactElement, useCallback, useEffect, useState } from 'react'
 
 interface ICard {
   frontTxt: string
@@ -501,11 +501,15 @@ export default function Home(this: any) {
 
           // check if card has been flipped (if it hasn't already been matched)
           let flipped = initFlip
-          if (!matched && !initFlip) {
-            for (const flippedCard of flippedCards) {
-              if (idx === flippedCard) {
-                flipped = true
-                break
+          if (!matched && !flipped) {
+            if (!gameActive) {
+              flipped = !gameActive
+            }else{
+              for (const flippedCard of flippedCards) {
+                if (idx === flippedCard) {
+                  flipped = true
+                  break
+                }
               }
             }
           }
