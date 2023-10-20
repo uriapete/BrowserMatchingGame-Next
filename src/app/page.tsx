@@ -383,7 +383,7 @@ export default function Home(this: any) {
               </label>
             </div>
             <div className="border-black border-2 rounded ml-[1vw] dark:text-black">
-              <input type="number" step={1} name="init-flip-delay" id="config-init-flip-delay" className='w-12' defaultValue={3} required={flipAtStart} />
+              <input type="number" step={1} name="num-strikes" id="config-num-strikes" className='w-12' defaultValue={3} required={flipAtStart} />
             </div>
           </div>
           <div className="">
