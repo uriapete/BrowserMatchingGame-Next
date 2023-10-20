@@ -157,7 +157,7 @@ export default function Home(this: any) {
     let numInitFlipDelaySetting: number
 
     // var for num or strikes
-    let numStrikes:number
+    let numStrikes: number
 
     // for numCards/March:
 
@@ -214,7 +214,7 @@ export default function Home(this: any) {
 
       numInitFlipDelaySetting = parseFloat(numinitFlipDelayStr)
 
-      if (isNaN(numInitFlipDelaySetting)||numInitFlipDelaySetting<=0) {
+      if (isNaN(numInitFlipDelaySetting) || numInitFlipDelaySetting <= 0) {
         setConfigMsg("Invalid number of seconds for cards to be flipped over at start!")
         return null
       }
@@ -233,14 +233,14 @@ export default function Home(this: any) {
 
       numStrikes = parseInt(numStrikesStr)
 
-      if (isNaN(numStrikes)||numStrikes<1) {
+      if (isNaN(numStrikes) || numStrikes < 1) {
         setConfigMsg("Invalid number of strikes! Must be at least 1.")
         return null
       }
 
       setMaxStrikes(numStrikes)
     }
-    else{
+    else {
       // if strikes are not enabled, set it to 0 to proper disable it
       setMaxStrikes(0)
     }
@@ -332,7 +332,7 @@ export default function Home(this: any) {
         return null
       }
 
-      if(!gameActive){
+      if (!gameActive) {
         return null
       }
 
@@ -357,9 +357,9 @@ export default function Home(this: any) {
         const chkMtch = checkMatch()
         if (chkMtch) {
           confirmMatch()
-        }else{
-          if(maxStrikes>0){
-            setStrikes(strikes+1)
+        } else {
+          if (maxStrikes > 0) {
+            setStrikes(strikes + 1)
           }
         }
         flipBack()
@@ -368,40 +368,60 @@ export default function Home(this: any) {
 
     // execute match check
     handleMatchCheck()
-  }, [flippedCards,initFlip,numCardsPerMatch,cards,matchedCards,maxStrikes,strikes])
+  }, [flippedCards, initFlip, numCardsPerMatch, cards, matchedCards, maxStrikes, strikes, gameActive])
 
   // effect - check strikes
   useEffect(() => {
-    function checkStrikes(){
-      if(maxStrikes<1){
+    // fn
+    function checkStrikes() {
+      // if strikes are disabled or strikes is less than maxStrikes
+      // null
+      if (maxStrikes < 1) {
         return null
       }
-      if(strikes<maxStrikes){
+      if (strikes < maxStrikes) {
         return null
       }
+
+      // else, game over
       setGameActive(false)
       setCongratsMsg("Game over! Ran out of strikes...")
     }
+
+    // execute this fn
     checkStrikes()
-  }, [cards,maxStrikes,strikes,flipCardToFrontSide])
+  }, [cards, maxStrikes, strikes, flipCardToFrontSide])
 
   // effect - check if all cards are matched
   // if so, congrats msg
   useEffect(() => {
-    if (matchedCards.length >= cards.length&&matchedCards.length>0&&gameActive) {
+    if (matchedCards.length >= cards.length && matchedCards.length > 0 && gameActive) {
       setGameActive(false)
       setCongratsMsg("Congratulations! You finished the game!")
     }
-  }, [matchedCards, cards.length,gameActive])
+  }, [matchedCards, cards.length, gameActive])
 
-  function StrikesDisplay() {
-    let strikesArr:ReactElement[]=[]
-    if(maxStrikes<=0){
+  // component for displaying strikes
+  // because we need to loop numbers, so we can't map it
+  function StrikesDisplay(): ReactElement[] {
+    // return variable
+    let strikesArr: ReactElement[] = []
+
+    // if strikes are disabled, return empty []
+    if (maxStrikes <= 0) {
       return strikesArr
     }
+
+    // style for each strike span
     const strikeStyle = "px-1 mx-1 border-2 border-white rounder-md text-white"
+
+    // now let's loop to maxStrikes
     for (let i = 0; i < maxStrikes; i++) {
-      if(i<strikes){
+      // for each strike:
+      // if our counter is less than var strikes
+      // mark a strike
+      // else mark O
+      if (i < strikes) {
         strikesArr.push(
           <span className={`${strikeStyle} bg-red-600`}>
             X
@@ -415,6 +435,7 @@ export default function Home(this: any) {
         )
       }
     }
+    // then return our strikes[]
     return strikesArr
   }
 
@@ -480,13 +501,13 @@ export default function Home(this: any) {
       {
         // add max strikes to this too
         // for redundancy
-        maxStrikes>0?(
+        maxStrikes > 0 ? (
           <div className="my-3.5 flex flex-row">
             <h3 className='text-2xl'>Strikes: </h3>
             <StrikesDisplay />
           </div>
         )
-        :
+          :
           ""
       }
       <div className={`gameboardcontainer mx-auto grid grid-cols-${cardsPerRow}`}>
@@ -508,7 +529,7 @@ export default function Home(this: any) {
           if (!matched && !flipped) {
             if (!gameActive) {
               flipped = !gameActive
-            }else{
+            } else {
               for (const flippedCard of flippedCards) {
                 if (idx === flippedCard) {
                   flipped = true
