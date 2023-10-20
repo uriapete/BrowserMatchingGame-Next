@@ -147,12 +147,17 @@ export default function Home(this: any) {
 
     const numinitFlipDelayStr = formData.get("init-flip-delay")?.toString()
 
+    const numStrikesStr = formData.get("num-strikes")?.toString()
+
     // our number vars
     let numCardsSetting: number
     let numMatchSetting: number
 
     // var for how much time to flip card over at start
     let numInitFlipDelaySetting: number
+
+    // var for num or strikes
+    let numStrikes:number
 
     // for numCards/March:
 
@@ -214,6 +219,24 @@ export default function Home(this: any) {
         return null
       }
     }
+
+    // if user enabled strikes:
+    // sanitize number of strikes
+    // then set it to maxStrikes
+    if (enableStrikes) {
+      if (typeof numStrikesStr === "undefined") {
+        setConfigMsg("Number of strikes can't be empty if \"Strikes\" is \"on\"!")
+        return null
+      }
+
+      numStrikes = parseFloat(numStrikesStr)
+
+      if (isNaN(numStrikes)||numStrikes<1) {
+        setConfigMsg("Invalid number of strikes! Must be at least 1.")
+        return null
+      }
+    }
+
 
     // clean messages
     setConfigMsg("")
