@@ -199,7 +199,7 @@ export default function Home(this: any) {
 
       numInitFlipDelaySetting = parseFloat(numinitFlipDelayStr)
 
-      if (isNaN(numCardsSetting)) {
+      if (isNaN(numInitFlipDelaySetting)||numInitFlipDelaySetting<=0) {
         setConfigMsg("Invalid number of seconds for cards to be flipped over at start!")
         return null
       }
