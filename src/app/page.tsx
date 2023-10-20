@@ -349,6 +349,10 @@ export default function Home(this: any) {
         const chkMtch = checkMatch()
         if (chkMtch) {
           confirmMatch()
+        }else{
+          if(maxStrikes>0){
+            setStrikes(strikes+1)
+          }
         }
         flipBack()
       }, cardMatchDelay);
@@ -356,7 +360,7 @@ export default function Home(this: any) {
 
     // execute match check
     handleMatchCheck()
-  }, [flippedCards,initFlip,numCardsPerMatch,cards,matchedCards])
+  }, [flippedCards,initFlip,numCardsPerMatch,cards,matchedCards,maxStrikes,strikes])
 
   // effect - check if all cards are matched
   // if so, congrats msg
