@@ -220,6 +220,8 @@ export default function Home(this: any) {
       }
     }
 
+    setStrikes(0)
+
     // if user enabled strikes:
     // sanitize number of strikes
     // then set it to maxStrikes
@@ -242,7 +244,6 @@ export default function Home(this: any) {
       // if strikes are not enabled, set it to 0 to proper disable it
       setMaxStrikes(0)
     }
-
 
     // clean messages
     setConfigMsg("")
