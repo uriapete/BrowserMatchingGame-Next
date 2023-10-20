@@ -366,6 +366,21 @@ export default function Home(this: any) {
     handleMatchCheck()
   }, [flippedCards,initFlip,numCardsPerMatch,cards,matchedCards,maxStrikes,strikes])
 
+  // effect - check strikes
+  useEffect(() => {
+    function checkStrikes(){
+      if(maxStrikes<1){
+        return null
+      }
+      if(strikes<maxStrikes){
+        return null
+      }
+      setGameActive(false)
+      setCongratsMsg("Game over! Ran out of strikes...")
+    }
+    checkStrikes()
+  }, [cards,maxStrikes,strikes,flipCardToFrontSide])
+
   // effect - check if all cards are matched
   // if so, congrats msg
   useEffect(() => {
